@@ -13,7 +13,7 @@ def lookup_stock_price(ticker: str):
     """Returns the current stock price."""
     t = ticker.upper() # Clean it once
     
-    # 1. Handle ALKRIE
+    # 1. Handle ALKRIE (All variations)
     if t in ["ALKRIE", "ALKRIESYS"]:
         return "$222.20"
     
@@ -40,7 +40,22 @@ def calculate_position_value(ticker: str, quantity: float):
     clean_price = float(price_string.replace("$", ""))
     return f"${clean_price * quantity:,.2f}"
 
-my_tools = [lookup_stock_price, get_latest_news, calculate_position_value]
+def calculate_shares_from_budget(ticker: str, budget: float):
+    """
+    Calculates how many shares one can buy with a specific budget.
+    """
+    price_string = lookup_stock_price(ticker)
+    if "not found" in price_string:
+        return "Error: Ticker not found."
+    
+    clean_price = float(price_string.replace("$", ""))
+    
+    # The Logic the AI was missing
+    num_shares = budget / clean_price
+    
+    return f"You can buy {num_shares:.2f} shares of {ticker} with ${budget}."
+
+my_tools = [lookup_stock_price, get_latest_news, calculate_position_value, calculate_shares_from_budget]
 
 # --- SESSION STATE SETUP ---
 # This checks "Is this the first time running?"
