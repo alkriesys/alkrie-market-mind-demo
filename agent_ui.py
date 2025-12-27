@@ -4,7 +4,7 @@ from google.genai import types
 import os
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="MarketMind Agent (0955)", layout="wide")
+st.set_page_config(page_title="MarketMind Agent (1046)", layout="wide")
 st.title("📈 MarketMind: Financial Research Agent")
 
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
