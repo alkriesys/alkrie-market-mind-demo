@@ -106,7 +106,11 @@ if prompt := st.chat_input("Ask about Alkrie, Google, or calculations..."):
             try:
                 # Send to Gemini
                 response = st.session_state.chat_session.send_message(prompt)
-                
+
+                # --- BUG FIX: ESCAPE DOLLAR SIGNS ---
+                # This prevents Streamlit from trying to render text as Math
+                safe_text = response.text.replace("$", "\$") 
+
                 # Show Response
                 st.markdown(response.text)
                 
