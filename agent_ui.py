@@ -4,19 +4,29 @@ from google.genai import types
 import os
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="MarketMind Agent", layout="wide")
+st.set_page_config(page_title="MarketMind Agent (0955)", layout="wide")
 st.title("📈 MarketMind: Financial Research Agent")
 
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
 # In a real app, you would import these from a 'tools.py' file to keep code clean.
 def lookup_stock_price(ticker: str):
     """Returns the current stock price."""
-    # Mock data including your custom company
-    if ticker.upper() == "ALKRIE":
+    t = ticker.upper() # Clean it once
+    
+    # 1. Handle ALKRIE
+    if t in ["ALKRIE", "ALKRIESYS"]:
         return "$222.20"
-    elif ticker.upper() == "GOOGL":
+    
+    # 2. Handle GOOGLE (All variations)
+    # The fix: Check against a LIST of valid aliases
+    elif t in ["GOOG", "GOOGL", "GOOGLE"]: 
         return "$175.50"
-    return "Ticker not found."
+        
+    # 3. Handle MICROSOFT
+    elif t in ["MSFT", "MICROSOFT"]:
+        return "$420.00"
+
+    return "Ticker not found. Try using the exact ticker symbol (e.g., GOOGL)."
 
 def get_latest_news(company: str):
     """Returns latest news."""
@@ -35,7 +45,18 @@ my_tools = [lookup_stock_price, get_latest_news, calculate_position_value]
 # --- SESSION STATE SETUP ---
 # This checks "Is this the first time running?"
 if "chat_session" not in st.session_state:
-    api_key = os.environ.get("GOOGLE_API_KEY")
+    # --- PROFESSIONAL FIX: HYBRID KEY LOADING ---
+    # 1. Try loading from Streamlit Cloud Secrets
+    if "GOOGLE_API_KEY" in st.secrets:
+        api_key = st.secrets["GOOGLE_API_KEY"]
+    # 2. Fallback to Local Environment (for your WSL)
+    else:
+        api_key = os.environ.get("GOOGLE_API_KEY")
+
+    if not api_key:
+        st.error("🚨 Error: API Key not found. Please set GOOGLE_API_KEY in Secrets.")
+        st.stop()
+        
     client = genai.Client(api_key=api_key)
     
     # Initialize the Chat Object and store it in memory
