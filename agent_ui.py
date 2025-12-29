@@ -13,7 +13,7 @@ with st.expander("💡 About this Demo:"):
     
     Unlike standard chatbots that hallucinate numbers, this Agent detects specific intents (Stock Price, Calculation) and executes **Python Functions (Tools)** to get the exact answer. It combines the fluency of an LLM with the precision of a calculator.
     
-    **Your Role:** Engineered the "Toolbox" (Stock Lookup, Budget Calculator) and the Python logic that handles input sanitization (e.g., mapping "Alkriesys" to "ALKRIE"), proving how to build robust, deterministic AI agents.
+    **Role:** Engineered the "Toolbox" (Stock Lookup, Budget Calculator) and the Python logic that handles input sanitization (e.g., mapping "Alkriesys" to "ALKRIE"), proving how to build robust, deterministic AI agents.
     """)
 
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
