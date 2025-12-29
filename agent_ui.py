@@ -7,6 +7,15 @@ import os
 st.set_page_config(page_title="MarketMind Agent (1046)", layout="wide")
 st.title("📈 MarketMind: Financial Research Agent")
 
+with st.expander("💡 About this Demo:"):
+    st.markdown("""
+    This application demonstrates **Agentic Tool Use** and the **ReAct Pattern** (Reason + Act).
+    
+    Unlike standard chatbots that hallucinate numbers, this Agent detects specific intents (Stock Price, Calculation) and executes **Python Functions (Tools)** to get the exact answer. It combines the fluency of an LLM with the precision of a calculator.
+    
+    **Your Role:** Engineered the "Toolbox" (Stock Lookup, Budget Calculator) and the Python logic that handles input sanitization (e.g., mapping "Alkriesys" to "ALKRIE"), proving how to build robust, deterministic AI agents.
+    """)
+
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
 # In a real app, you would import these from a 'tools.py' file to keep code clean.
 def lookup_stock_price(ticker: str):
