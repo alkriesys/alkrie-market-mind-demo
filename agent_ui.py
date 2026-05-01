@@ -118,7 +118,7 @@ if prompt := st.chat_input("Ask about Alkrie, Google, or calculations..."):
 
                 # --- BUG FIX: ESCAPE DOLLAR SIGNS ---
                 # This prevents Streamlit from trying to render text as Math
-                safe_text = response.text.replace("$", "\$") 
+                safe_text = response.text.replace("$", r"\$")
 
                 # Show Response
                 st.markdown(response.text)
