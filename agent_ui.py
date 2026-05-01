@@ -2,6 +2,7 @@ import streamlit as st
 from google import genai
 from google.genai import types
 import os
+import yfinance as yf
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="MarketMind Agent (1046)", layout="wide")
@@ -19,30 +20,65 @@ with st.expander("💡 About this Demo:"):
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
 # In a real app, you would import these from a 'tools.py' file to keep code clean.
 def lookup_stock_price(ticker: str):
-    """Returns the current stock price."""
-    t = ticker.upper() # Clean it once
-    
-    # 1. Handle ALKRIE (All variations)
-    if t in ["ALKRIE", "ALKRIESYS"]:
-        return "$222.20"
-    
-    # 2. Handle GOOGLE (All variations)
-    # The fix: Check against a LIST of valid aliases
-    elif t in ["GOOG", "GOOGL", "GOOGLE"]: 
-        return "$175.50"
-        
-    # 3. Handle MICROSOFT
-    elif t in ["MSFT", "MICROSOFT"]:
-        return "$420.00"
-
-    return "Ticker not found. Try using the exact ticker symbol (e.g., GOOGL)."
+    """Returns the current real-time stock price."""
+    try:
+        t = ticker.upper()
+        # Handle your custom aliases
+        aliases = {
+            "ALKRIE": "GOOGL",  # Map to real ticker for demo
+            "ALKRIESYS": "GOOGL",
+            "GOOGLE": "GOOGL",
+            "MICROSOFT": "MSFT",
+        }
+        t = aliases.get(t, t)
+        stock = yf.Ticker(t)
+        price = stock.fast_info["last_price"]
+        return f"${price:.2f}"
+    except Exception as e:
+        return f"Ticker not found: {e}"
 
 def get_latest_news(company: str):
-    """Returns latest news."""
-    return f"Latest headlines for {company}: Market is bullish. CEO is optimistic."
+    """Returns latest real news headlines for a company."""
+    try:
+        t = company.upper()
+        aliases = {"GOOGLE": "GOOGL", "MICROSOFT": "MSFT"}
+        t = aliases.get(t, t)
+        stock = yf.Ticker(t)
+        news = stock.news[:3]  # Get top 3 headlines
+        if not news:
+            return "No recent news found."
+        headlines = "\n".join(
+            [f"- {n['content']['title']}" for n in news]
+        )
+        return f"Latest news for {company}:\n{headlines}"
+    except Exception as e:
+        return f"Error fetching news: {e}"
+
+def get_company_info(ticker: str):
+    """Returns key company details like sector, employees, description."""
+    try:
+        t = ticker.upper()
+        aliases = {"GOOGLE": "GOOGL", "MICROSOFT": "MSFT"}
+        t = aliases.get(t, t)
+        stock = yf.Ticker(t)
+        info = stock.info
+        return (
+            f"**{info.get('longName', t)}**\n"
+            f"- Sector: {info.get('sector', 'N/A')}\n"
+            f"- Industry: {info.get('industry', 'N/A')}\n"
+            f"- Employees: {info.get('fullTimeEmployees', 'N/A'):,}\n"
+            f"- Market Cap: ${info.get('marketCap', 0)/1e9:.2f}B\n"
+            f"- 52W High: ${info.get('fiftyTwoWeekHigh', 'N/A')}\n"
+            f"- 52W Low: ${info.get('fiftyTwoWeekLow', 'N/A')}\n"
+            f"- Summary: {info.get('longBusinessSummary', 'N/A')[:200]}..."
+        )
+    except Exception as e:
+        return f"Error fetching company info: {e}"
 
 def calculate_position_value(ticker: str, quantity: float):
     """Calculates total cost."""
+    aliases = {"GOOGLE": "GOOGL", "MICROSOFT": "MSFT", "ALKRIE": "GOOGL"}
+    ticker = aliases.get(ticker.upper(), ticker.upper())
     price_string = lookup_stock_price(ticker)
     if "not found" in price_string:
         return "Error: Ticker not found."
@@ -53,6 +89,8 @@ def calculate_shares_from_budget(ticker: str, budget: float):
     """
     Calculates how many shares one can buy with a specific budget.
     """
+    aliases = {"GOOGLE": "GOOGL", "MICROSOFT": "MSFT", "ALKRIE": "GOOGL"}
+    ticker = aliases.get(ticker.upper(), ticker.upper())
     price_string = lookup_stock_price(ticker)
     if "not found" in price_string:
         return "Error: Ticker not found."
@@ -64,7 +102,13 @@ def calculate_shares_from_budget(ticker: str, budget: float):
     
     return f"You can buy {num_shares:.2f} shares of {ticker} with ${budget}."
 
-my_tools = [lookup_stock_price, get_latest_news, calculate_position_value, calculate_shares_from_budget]
+my_tools = [
+    lookup_stock_price,
+    get_latest_news,
+    get_company_info,          # NEW
+    calculate_position_value,
+    calculate_shares_from_budget
+]
 
 # --- SESSION STATE SETUP ---
 # This checks "Is this the first time running?"
