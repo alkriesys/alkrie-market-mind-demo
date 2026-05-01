@@ -85,7 +85,7 @@ if "chat_session" not in st.session_state:
     
     # Initialize the Chat Object and store it in memory
     st.session_state.chat_session = client.chats.create(
-        model="gemini-2.0-flash",
+        model="gemini-3.0-flash",
         config=types.GenerateContentConfig(
             tools=my_tools,
             system_instruction="You are a Financial Analyst. Use tools to answer. Be professional.",
