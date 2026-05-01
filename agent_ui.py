@@ -8,13 +8,37 @@ import yfinance as yf
 st.set_page_config(page_title="MarketMind Agent (1046)", layout="wide")
 st.title("📈 MarketMind: Financial Research Agent")
 
-with st.expander("💡 About this Demo:"):
+with st.expander("💡 How to Use MarketMind — Click to Expand"):
     st.markdown("""
-    This application demonstrates **Agentic Tool Use** and the **ReAct Pattern** (Reason + Act).
-    
-    Unlike standard chatbots that hallucinate numbers, this Agent detects specific intents (Stock Price, Calculation) and executes **Python Functions (Tools)** to get the exact answer. It combines the fluency of an LLM with the precision of a calculator.
-    
-    **Role:** Engineered the "Toolbox" (Stock Lookup, Budget Calculator) and the Python logic that handles input sanitization (e.g., mapping "Alkriesys" to "ALKRIE"), proving how to build robust, deterministic AI agents.
+    ### 🤖 What is MarketMind?
+    MarketMind is an **AI-powered Financial Research Agent** that fetches **real-time stock data** 
+    and answers your questions using live market information — no hallucinated numbers.
+
+    ---
+
+    ### 🛠️ What Can It Do?
+    | Capability | Example Question |
+    |---|---|
+    | 📈 Live Stock Price | *"What is the current price of Apple?"* |
+    | 🏢 Company Info | *"Tell me about Microsoft as a company"* |
+    | 📰 Latest News | *"What's the latest news on Tesla?"* |
+    | 💰 Position Value | *"What is 50 shares of Google worth?"* |
+    | 🧮 Budget Calculator | *"How many shares of Amazon can I buy with $5,000?"* |
+
+    ---
+
+    ### 💬 How to Ask
+    Just type naturally in the chat box below. For example:
+    - *"What is NVDA trading at right now?"*
+    - *"Give me a company overview of Apple"*
+    - *"If I have a budget of $10,000, how many Tesla shares can I buy?"*
+    - *"What are the latest headlines for Amazon?"*
+
+    ---
+
+    ### ⚠️ Disclaimer
+    This tool is for **educational and demo purposes only**.  
+    It is **not** financial advice. Always consult a licensed financial advisor before making investment decisions.
     """)
 
 # --- DEFINING TOOLS (Copy-pasted from your script) ---
